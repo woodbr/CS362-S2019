@@ -655,7 +655,7 @@ static int adventurerCardEffect(struct gameState *state, int *temphand, int curr
     }
     drawCard(currentPlayer, state);
     cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-    if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+    if (cardDrawn = copper || cardDrawn == silver || cardDrawn == gold)
       drawntreasure++;
     else{
       temphand[z]=cardDrawn;
@@ -681,7 +681,7 @@ static int smithyCardEffect(struct gameState *state, int handPos, int currentPla
     }
 
   //discard card from hand
-  discardCard(handPos, currentPlayer, state, 0);
+  discardCard(handPos, currentPlayer, state, 1);
   return 0;
 }
 
@@ -699,7 +699,7 @@ static int councilRoomCardEffect(struct gameState *state, int handPos, int curre
   state->numBuys++;
 
   //Each other player draws a card
-  for (i = 0; i < state->numPlayers; i++)
+  for (; i < state->numPlayers; i++)
     {
       if ( i != currentPlayer )
         {
@@ -843,7 +843,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return -1;
 			
     case mine:
-      return mineCardEffect(state, choice1, choice2, handPos, currentPlayer);
+      return mineCardEffect(state, choice1, choice2, currentPlayer, handPos);
 			
     case remodel:
       j = state->hand[currentPlayer][choice1];  //store card we will trash
