@@ -643,7 +643,7 @@ int getCost(int cardNumber)
   return -1;
 }
 
-static int adventurerCardEffect(struct gameState *state, int *temphand, int currentPlayer)
+int adventurerCardEffect(struct gameState *state, int *temphand, int currentPlayer)
 {
   int drawntreasure = 0;
   int cardDrawn;
@@ -670,7 +670,7 @@ static int adventurerCardEffect(struct gameState *state, int *temphand, int curr
   return 0;
 }
 
-static int smithyCardEffect(struct gameState *state, int handPos, int currentPlayer)
+int smithyCardEffect(struct gameState *state, int handPos, int currentPlayer)
 {
   int i;
 
@@ -685,7 +685,7 @@ static int smithyCardEffect(struct gameState *state, int handPos, int currentPla
   return 0;
 }
 
-static int councilRoomCardEffect(struct gameState *state, int handPos, int currentPlayer)
+int councilRoomCardEffect(struct gameState *state, int handPos, int currentPlayer)
 {
   int i;
 
@@ -713,7 +713,7 @@ static int councilRoomCardEffect(struct gameState *state, int handPos, int curre
   return 0;
 }
 
-static int feastCardEffect(struct gameState *state, int *temphand, int choice1, int currentPlayer)
+int feastCardEffect(struct gameState *state, int *temphand, int choice1, int currentPlayer)
 {
   int i;
   int x;
@@ -771,7 +771,7 @@ static int feastCardEffect(struct gameState *state, int *temphand, int choice1, 
   return 0;
 }
 
-static int mineCardEffect(struct gameState *state, int choice1, int choice2, int handPos, int currentPlayer)
+int mineCardEffect(struct gameState *state, int choice1, int choice2, int handPos, int currentPlayer)
 {
   int i;
   int j;
