@@ -3,22 +3,41 @@
 #include<stdlib.h>
 #include<time.h>
 
+#define MYARRAYSIZE(a) (sizeof(a) / sizeof(*a))
+
 char inputChar()
 {
-    // TODO: rewrite this function
-    return ' ';
+    char pool[] = {
+        '[', '(', '{', ' ',
+        'a', 'b', 'x', 'y',
+        'z', '}', ')', ']'
+    };
+
+    return pool[rand() % MYARRAYSIZE(pool)];
 }
 
-char *inputString()
+const char *inputString()
 {
-    // TODO: rewrite this function
-    return "";
+    const char *pool[] = {
+        "",
+        "t",
+        "et",
+        "set",
+        "r",
+        "re",
+        "res",
+        "rese",
+        "reset",
+        "other"
+    };
+
+    return pool[rand() % MYARRAYSIZE(pool)];
 }
 
 void testme()
 {
   int tcCount = 0;
-  char *s;
+  const char *s;
   char c;
   int state = 0;
   while (1)
