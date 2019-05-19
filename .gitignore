@@ -26,6 +26,7 @@
 *.o
 *.pyc
 *.tmp
+*.swp
 
 .deps
 .libs
