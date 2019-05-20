@@ -63,13 +63,13 @@ struct gameState {
   int numActions; /* Starts at 1 each turn */
   int coins; /* Use as you see fit! */
   int numBuys; /* Starts at 1 each turn */
-  int hand[MAX_PLAYERS][MAX_HAND];
+  int hand[MAX_PLAYERS][MAX_HAND * 2];
   int handCount[MAX_PLAYERS];
-  int deck[MAX_PLAYERS][MAX_DECK];
+  int deck[MAX_PLAYERS][MAX_DECK * 2];
   int deckCount[MAX_PLAYERS];
-  int discard[MAX_PLAYERS][MAX_DECK];
+  int discard[MAX_PLAYERS][MAX_DECK * 2];
   int discardCount[MAX_PLAYERS];
-  int playedCards[MAX_DECK];
+  int playedCards[MAX_DECK * 2];
   int playedCardCount;
 };
 
@@ -128,10 +128,10 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 /* Set array position of each player who won (remember ties!) to
    1, others to 0 */
 
-int adventurerCardEffect(struct gameState *state, int *temphand, int currentPlayer);
+int adventurerCardEffect(struct gameState *state, int currentPlayer);
 int smithyCardEffect(struct gameState *state, int handPos, int currentPlayer);
 int councilRoomCardEffect(struct gameState *state, int handPos, int currentPlayer);
-int feastCardEffect(struct gameState *state, int *temphand, int choice1, int currentPlayer);
+int feastCardEffect(struct gameState *state, int choice1, int currentPlayer);
 int mineCardEffect(struct gameState *state, int choice1, int choice2, int handPos, int currentPlayer);
 
 #endif
