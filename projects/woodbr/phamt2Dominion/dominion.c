@@ -201,7 +201,7 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
 int shuffle(int player, struct gameState *state) {
  
 
-  int newDeck[MAX_DECK];
+  int newDeck[MAX_DECK * 2];
   int newDeckPos = 0;
   int card;
   int i;
@@ -211,6 +211,10 @@ int shuffle(int player, struct gameState *state) {
   qsort ((void*)(state->deck[player]), state->deckCount[player], sizeof(int), compare); 
   /* SORT CARDS IN DECK TO ENSURE DETERMINISM! */
 
+  //assert(state->deckCount[player] <= MAX_HAND);
+  if (state->deckCount[player] > MAX_HAND) {
+    state->deckCount[player] = MAX_HAND;
+  }
   while (state->deckCount[player] > 0) {
     card = floor(Random() * state->deckCount[player]);
     newDeck[newDeckPos] = state->deck[player][card];
@@ -645,13 +649,16 @@ int getCost(int cardNumber)
 
 int adventurerRefactored(int drawntreasure, struct gameState *state, int currentPlayer){
     int cardDrawn;
-    int temphand[MAX_HAND];
+    int temphand[MAX_HAND * 2];
     int z = 0;
-    while(drawntreasure<2){
+    while(drawntreasure<2 && z<MAX_HAND){
         if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
             shuffle(currentPlayer, state);
         }
         drawCard(currentPlayer, state);
+	if (state->handCount[currentPlayer] <= 0) {
+	    break;
+	}
         cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
         if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
             drawntreasure++;
@@ -663,7 +670,7 @@ int adventurerRefactored(int drawntreasure, struct gameState *state, int current
         }
     }
     //BUG 2: Changed z-1>=0 to z-1>=1 in order to discard only when z is equal to 3 instead of 2. Which will change how many cards will be in the temphand when drawn
-    while(z-1>=1){
+    while(z-1>=0){
         state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
         z=z-1;
     }
@@ -754,7 +761,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   int nextPlayer = currentPlayer + 1;
 
   int tributeRevealedCards[2] = {-1, -1};
-  int temphand[MAX_HAND];// moved above the if statement
+  int temphand[MAX_HAND * 2];// moved above the if statement
   int drawntreasure=0;
   int cardDrawn;
   int z = 0;// this is the counter for the temp hand
@@ -794,10 +801,14 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 			
       return 0;
 			
-    case feast:
+    case feast: {
       //gain card with cost up to 5
       //Backup hand
-      for (i = 0; i <= state->handCount[currentPlayer]; i++){
+      int hc = MAX_HAND;
+      if (state->handCount[currentPlayer] < hc) {
+	hc = state->handCount[currentPlayer];
+      }
+      for (i = 0; i < hc; i++){
 	temphand[i] = state->hand[currentPlayer][i];//Backup card
 	state->hand[currentPlayer][i] = -1;//Set to nothing
       }
@@ -814,6 +825,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	  if (DEBUG){
 	    printf("Cards Left: %d\n", supplyCount(choice1, state));
 	  }
+	  return -1;
 	}
 	else if (state->coins < getCost(choice1)){
 	  printf("That card is too expensive!\n");
@@ -821,6 +833,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	  if (DEBUG){
 	    printf("Coins: %d < %d\n", state->coins, getCost(choice1));
 	  }
+	  return -1;
 	}
 	else{
 
@@ -839,18 +852,22 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       }     
 
       //Reset Hand
-      for (i = 0; i <= state->handCount[currentPlayer]; i++){
+      for (i = 0; i < hc; i++){
 	state->hand[currentPlayer][i] = temphand[i];
 	temphand[i] = -1;
       }
       //Reset Hand
       			
       return 0;
+    }
 			
     case gardens:
       return -1;
 			
     case mine:
+      if (choice1 > state->numPlayers) {
+	return -1;
+      }
       j = state->hand[currentPlayer][choice1];  //store card we will trash
 
       if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
