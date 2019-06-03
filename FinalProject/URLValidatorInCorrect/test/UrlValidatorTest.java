@@ -124,6 +124,37 @@ protected void setUp() {
          System.out.println();
       }
    }
+   //Tom unittests are added here:
+   public void testValidatorAuthority() {
+       urlValidator urlValidator = new UrlValidator();
+
+       //Should result in validity
+       assertTrue(urlValidator.isValid("https://www.netflix.com"));
+       assertTrue(urlValidator.isValid("https://www.netflix.com/"));
+
+       //Should result in invalidity
+       assertFalse(urlValidator.isValid("https://ww.netflix.com"));
+       assertFalse(urlValidator.isValid("https://w.netflix.com"));
+       assertFalse(urlValidator.isValid("https://www.netflix"));
+       assertFalse(urlValidator.isValid("https://netflix"));
+   }
+
+   public void testValidatorPath() {
+       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
+
+       //Should result in validity due to UrlValidator allowing up to 2 slashes to be used
+       assertTrue(urlValidator.isValid("https://www.hulu.com/welcome?v=a"));
+       assertTrue(urlValidator.isValid("https://www.hulu.com//welcome?v=a"));
+       
+       //Should result in invalidity due to spaces and more than 2 slashes being used.
+       assertFalse(urlValidator.isValid("https://www.hulu.com///welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com////welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com/////welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com/ welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com&welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com3welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.comswelcome?v=a"));
+   }
    
    
    //JEFF unittests added here:
