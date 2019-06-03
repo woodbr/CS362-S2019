@@ -124,6 +124,48 @@ protected void setUp() {
          System.out.println();
       }
    }
+   
+   
+   //JEFF unittests added here:
+   public void testValidatorQueries() {
+       String[] schemes = {"http","https"};
+       UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+       //valid query strings
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/?q=cs&close=default_frontend"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/computerscience/?q=cs"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/"));
+
+       //invalid query strings
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu./?q=cs"));
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu//?q=cs"));
+   }
+   
+   public void testValidatorTestFragments1() {
+       String[] schemes = {"http","https"};
+     //NO_FRAGMENT flag, valid fragments not allowed
+       UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+       
+       //no fragment included
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome"));
+       
+       //fragment not allowed
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu/welcome#message"));
+     
+   }
+   public void testValidatorTestFragments2() {
+       String[] schemes = {"http","https"};
+     //not including NO_FRAGMENT flag, valid fragments are allowed
+       UrlValidator urlValidator = new UrlValidator(schemes);
+       
+       //no fragment included
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome"));
+       
+       //valid fragment allowed
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome#message"));
+     
+   }
+   
+   
 
    public void testValidator202() {
        String[] schemes = {"http","https"};
