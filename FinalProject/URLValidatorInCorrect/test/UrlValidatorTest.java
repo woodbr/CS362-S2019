@@ -126,7 +126,7 @@ protected void setUp() {
    }
    //Tom unittests are added here:
    public void testValidatorAuthority() {
-       urlValidator urlValidator = new UrlValidator();
+       UrlValidator urlValidator = new UrlValidator();
 
        //Should result in validity
        assertTrue(urlValidator.isValid("https://www.netflix.com"));
@@ -407,7 +407,7 @@ protected void setUp() {
     static boolean incrementTestPartsIndex(int[] testPartsIndex, Object[] testParts) {
       boolean carry = true;  //add 1 to lowest order part.
       boolean maxIndex = true;
-      for (int testPartsIndexIndex = testPartsIndex.length; testPartsIndexIndex >= 0; --testPartsIndexIndex) {
+      for (int testPartsIndexIndex = testPartsIndex.length-1; testPartsIndexIndex >= 0; --testPartsIndexIndex) {
           int index = testPartsIndex[testPartsIndexIndex];
          ResultPair[] part = (ResultPair[]) testParts[testPartsIndexIndex];
          maxIndex &= (index == (part.length - 1));
