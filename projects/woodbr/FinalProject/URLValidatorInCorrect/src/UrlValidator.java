@@ -137,7 +137,7 @@ public class UrlValidator implements Serializable {
     // TODO does not allow for optional userinfo. 
     // Validation of character set is done by isValidAuthority
     private static final String AUTHORITY_CHARS_REGEX = "\\p{Alnum}\\-\\."; // allows for IPV4 but not IPV6
-    private static final String IPV6_REGEX = "[0-9a-fA-F:]+"; // do this as separate match because : could cause ambiguity with port prefix
+    private static final String IPV6_REGEX = "[0-9a-fA-F:\\.]+"; // do this as separate match because : could cause ambiguity with port prefix
 
     // userinfo    = *( unreserved / pct-encoded / sub-delims / ":" )
     // unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"

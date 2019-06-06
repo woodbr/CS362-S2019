@@ -59,9 +59,50 @@ protected void setUp() {
 	   assertTrue(InetAddressValidator.getInstance()
 			   .isValidInet6Address("7:0123:4567:89::abcd:EF"));
 	   assertTrue(InetAddressValidator.getInstance()
-			   .isValidInet6Address("::"));
+			   .isValid("::"));
 	   assertTrue(InetAddressValidator.getInstance()
-			   .isValidInet6Address("1:1:1:1::1:1.1.1.1"));
+			   .isValid("1:1:1:1::1:1.1.1.1"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValid("1:1:1:1::1:1.1.1.1"));
+
+	   UrlValidator uv = UrlValidator.getInstance();
+	   assertTrue(uv.isValid("HtTp://[::]:80/"));
+	   assertTrue(uv.isValid("HtTp://[abcd::ef]"));
+	   assertTrue(uv.isValid("HtTp://[abcd::ef:0123]"));
+	   assertTrue(uv.isValid("HtTp://[1:1:1:1::1.1.1.1]"));
+	   assertTrue(uv.isValid("HtTp://[::abcd]"));
+	   assertTrue(uv.isValid("HtTp://[abcd::]"));
+	   assertFalse(uv.isValid("HtTp://[abcde::]"));
+	   assertFalse(uv.isValid("HtTp://[abcd:::]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1.1.1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1..1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::01.1.1.1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1.A]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1.X]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.999.1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1100.1]"));
+	   assertFalse(uv.isValid("HtTp://[a:b:c:d:e:f:0:1:]"));
+	   assertFalse(uv.isValid("HtTp://[:a:b:c:d:e:f:0:1]"));
+	   assertFalse(uv.isValid("HtTp://[a:b:c:d:e:f:0:1:2]"));
+	   assertFalse(uv.isValid("HtTp://[a:b:c:d:e:f:0:10.10.10.10]"));
+	   assertFalse(uv.isValid("HtTp://[::abcd::]"));
+	   assertFalse(uv.isValid("HtTp://[ab::cd::ef]"));
+	   assertFalse(uv.isValid("HtTp://[+abcd::ef]:80/"));
+	   assertFalse(uv.isValid("HtTp://[abcd::+ef]:80/"));
+   }
+
+   public void testIPv4Address() {
+	   UrlValidator uv = UrlValidator.getInstance();
+	   assertTrue(uv.isValid("HtTp://127.0.0.1:80/"));
+	   assertFalse(uv.isValid("HtTp://127.00.0.1:80/"));
+	   assertFalse(uv.isValid("HtTp://10.10.10.256:80/"));
+	   assertFalse(uv.isValid("HtTp://10.10.10.10.10:80/"));
+   }
+
+   public void testPortNumber() {
+	   UrlValidator uv = UrlValidator.getInstance();
+	   assertFalse(uv.isValid("HtTp://10.0.0.1:-80/"));
+	   assertFalse(uv.isValid("HtTp://127.0.0.1:88888/"));
    }
 
    public void testIsValidScheme() {
