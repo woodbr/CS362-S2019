@@ -251,25 +251,46 @@ protected void setUp() {
         assertTrue("file:///c:/ should now be allowed",
                  validator.isValid("file:///C:/some.file"));
 
+        assertTrue("FiLe:///c:/ should now be allowed",
+                 validator.isValid("FiLe:///C:/some.file"));
+
         // Currently, we don't support the c:\ form
         assertFalse("file:///c:\\ shouldn't be allowed",
               validator.isValid("file:///C:\\some.file"));
 
+        assertFalse("FiLe:///c:\\ shouldn't be allowed",
+                validator.isValid("FiLe:///C:\\some.file"));
+
         assertTrue("file:///etc/ should now be allowed",
               validator.isValid("file:///etc/hosts"));
+
+        assertTrue("fIlE:///etc/ should now be allowed",
+              validator.isValid("fIlE:///etc/hosts"));
 
         assertTrue("file://localhost/etc/ should now be allowed",
               validator.isValid("file://localhost/etc/hosts"));
 
+        assertTrue("FiLe://localhost/etc/ should now be allowed",
+              validator.isValid("FiLe://localhost/etc/hosts"));
+
         assertTrue("file://localhost/c:/ should now be allowed",
               validator.isValid("file://localhost/c:/some.file"));
+
+        assertTrue("fIlE://localhost/c:/ should now be allowed",
+              validator.isValid("fIlE://localhost/c:/some.file"));
 
         // These are never valid
         assertFalse("file://c:/ shouldn't ever be allowed, needs file:///c:/",
               validator.isValid("file://C:/some.file"));
 
+        assertFalse("FiLe://c:/ shouldn't ever be allowed, needs file:///c:/",
+                validator.isValid("FiLe://C:/some.file"));
+
         assertFalse("file://c:\\ shouldn't ever be allowed, needs file:///c:/",
               validator.isValid("file://C:\\some.file"));
+
+        assertFalse("fIlE://c:\\ shouldn't ever be allowed, needs file:///c:/",
+              validator.isValid("fIlE://C:\\some.file"));
     }
 
     public void testValidator391OK() {

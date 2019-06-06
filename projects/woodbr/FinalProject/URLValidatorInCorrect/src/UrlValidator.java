@@ -309,11 +309,13 @@ public class UrlValidator implements Serializable {
         if (!isValidScheme(scheme)) {
             return false;
         }
+        scheme = scheme.toLowerCase(Locale.ENGLISH);
 
         String authority = urlMatcher.group(PARSE_URL_AUTHORITY);
         if ("file".equals(scheme)) {// Special case - file: allows an empty authority
             if (authority != null) {
                 if (authority.contains(":")) { // but cannot allow trailing :
+                //if (!authority.isEmpty() && authority.charAt(authority.length()-1)==':') {
                     return false;
                 }
             }
