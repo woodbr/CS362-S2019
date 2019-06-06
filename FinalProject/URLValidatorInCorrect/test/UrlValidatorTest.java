@@ -125,6 +125,40 @@ protected void setUp() {
       }
    }
 
+   //Random Test
+   public void random() {
+
+      String[] schemeArray = {"https://", "http://", "ht://", "htp://", "http//", "lk://", "h://"};
+      String[] authorityArray = {"www.hulu.com", "ww.hulu.com", "w.hulu.com", "www.hulu", "hulu"};
+      String[] pathArray = {"/welcome", "//welcome", "/////welcome", "///welcome", "////welcome", "/ welcome", "&welcome", "3welcome", "swelcome"};
+      String[] queriesArray = {"?v=c", "/?v=c", "//?v=c"};
+
+      UrlValidator urlValidator = new UrlValidator();
+
+      for(int i = 0; i < 1000; i++)
+      {
+          //REFERENCED: https://dzone.com/articles/random-number-generation-in-java
+          int schemeRandom = (int)(Math.random() * 7);
+          int authorityRandom = (int)(Math.random() * 5);
+          int pathRandom = (int)(Math.random() * 9);
+          int queriesRandom = (int)(Math.random() * 3);
+
+
+          String combine = schemeArray[schemeRandom] + authorityArray[authorityRandom] + pathArray[pathRandom] + queriesArray[queriesRandom];
+
+          if(schemeRandom < 2 || authorityRandom < 1 || pathArray < 2 || queriesArray < 1)
+          {
+              assertTrue(urlValidator.isValid(combine));
+          }
+
+          else
+          {
+              assertFalse(urlValidator.isValid(combine));
+          }
+      }
+
+   }
+
    public void testValidator202() {
        String[] schemes = {"http","https"};
        UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
@@ -496,6 +530,13 @@ protected void setUp() {
        assertFalse(validator.isValid("http://example.com/serach?address=Main Avenue"));
        assertTrue(validator.isValid("http://example.com/serach?address=Main%20Avenue"));
        assertTrue(validator.isValid("http://example.com/serach?address=Main+Avenue"));
+   }
+
+   public void randomTest() {
+
+       char *arrayScheme[] = {"https://", "http://", "ht://", "htp://", "http//"};
+       char *arrayAuthority[] = {};
+
    }
 
    //-------------------- Test data for creating a composite URL
