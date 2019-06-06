@@ -155,6 +155,21 @@ protected void setUp() {
        assertFalse(urlValidator.isValid("https://www.hulu.com3welcome?v=a"));
        assertFalse(urlValidator.isValid("https://www.hulu.comswelcome?v=a"));
    }
+
+   public void testValidatorScheme() {
+       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+
+       //Should reuslt in validity
+       assertTrue(urlValidator.isValid("https://www.netflix.com"));
+       assertTrue(urlValidator.isValid("http://www.netflix.com"));
+       
+       //Should result in invalidity
+       assertFalse(urlValidator.isValid("htp://www.netflix.com"));
+       assertFalse(urlValidator.isValid("ht://www.netflix.com"));
+       assertFalse(urlValidator.isValid("lk://www.netflix.com"));
+       assertFalse(urlValidator.isValid("h://www.netflix.com"));
+       assertFalse(urlValidator.isValid("http//www.netflix.com"));
+   }
    
    
    //JEFF unittests added here:
