@@ -146,7 +146,7 @@ protected void setUp() {
 
           String combine = schemeArray[schemeRandom] + authorityArray[authorityRandom] + pathArray[pathRandom] + queriesArray[queriesRandom];
 
-          if(schemeRandom > 1 || authorityRandom > 0 || pathArray > 1 || queriesArray > 0)
+          if(schemeRandom > 1 || authorityRandom > 0 || pathRandom> 1 || queriesRandom > 0)
           {
               assertFalse(urlValidator.isValid(combine));
           }
@@ -531,14 +531,14 @@ protected void setUp() {
        assertTrue(validator.isValid("http://example.com/serach?address=Main%20Avenue"));
        assertTrue(validator.isValid("http://example.com/serach?address=Main+Avenue"));
    }
-
+/*
    public void randomTest() {
 
-       char *arrayScheme[] = {"https://", "http://", "ht://", "htp://", "http//"};
-       char *arrayAuthority[] = {};
+       String[] arrayScheme = {"https://", "http://", "ht://", "htp://", "http//"};
+       String[] arrayAuthority = new String[0];
 
    }
-
+*/
    //-------------------- Test data for creating a composite URL
    /**
     * The data given below approximates the 4 parts of a URL
