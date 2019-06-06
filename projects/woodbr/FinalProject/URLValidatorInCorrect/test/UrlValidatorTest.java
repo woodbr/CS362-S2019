@@ -49,6 +49,21 @@ protected void setUp() {
         testIsValid(testUrlPartsOptions, options);
    }
 
+   public void testIPv6Address() {
+	   assertFalse(InetAddressValidator.getInstance()
+			   .isValidInet6Address("+7:0123:4567:89::abcd:EF"));
+	   assertFalse(InetAddressValidator.getInstance()
+			   .isValidInet6Address("7:0123:4567:+89::abcd:EF"));
+	   assertFalse(InetAddressValidator.getInstance()
+			   .isValidInet6Address("7:0123:4567:-89::abcd:EF"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValidInet6Address("7:0123:4567:89::abcd:EF"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValidInet6Address("::"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValidInet6Address("1:1:1:1::1:1.1.1.1"));
+   }
+
    public void testIsValidScheme() {
       if (printStatus) {
          System.out.print("\n testIsValidScheme() ");
