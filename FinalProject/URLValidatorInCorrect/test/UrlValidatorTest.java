@@ -146,14 +146,14 @@ protected void setUp() {
 
           String combine = schemeArray[schemeRandom] + authorityArray[authorityRandom] + pathArray[pathRandom] + queriesArray[queriesRandom];
 
-          if(schemeRandom < 2 || authorityRandom < 1 || pathArray < 2 || queriesArray < 1)
+          if(schemeRandom > 1 || authorityRandom > 0 || pathArray > 1 || queriesArray > 0)
           {
-              assertTrue(urlValidator.isValid(combine));
+              assertFalse(urlValidator.isValid(combine));
           }
 
           else
           {
-              assertFalse(urlValidator.isValid(combine));
+              assertTrue(urlValidator.isValid(combine));
           }
       }
 
