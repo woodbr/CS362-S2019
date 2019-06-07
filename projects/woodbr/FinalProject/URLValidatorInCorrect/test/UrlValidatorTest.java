@@ -56,11 +56,11 @@ protected void setUp() {
        //Should result in validity
        assertTrue(urlValidator.isValid("https://www.netflix.com"));
        assertTrue(urlValidator.isValid("https://www.netflix.com/"));
+       assertTrue(urlValidator.isValid("https://ww.netflix.com"));
+       assertTrue(urlValidator.isValid("https://w.netflix.com"));
+       assertTrue(urlValidator.isValid("https://www.netflix"));
 
        //Should result in invalidity
-       assertFalse(urlValidator.isValid("https://ww.netflix.com"));
-       assertFalse(urlValidator.isValid("https://w.netflix.com"));
-       assertFalse(urlValidator.isValid("https://www.netflix"));
        assertFalse(urlValidator.isValid("https://netflix"));
    }
 
@@ -70,11 +70,11 @@ protected void setUp() {
        //Should result in validity due to UrlValidator allowing up to 2 slashes to be used
        assertTrue(urlValidator.isValid("https://www.hulu.com/welcome?v=a"));
        assertTrue(urlValidator.isValid("https://www.hulu.com//welcome?v=a"));
+       assertTrue(urlValidator.isValid("https://www.hulu.com///welcome?v=a"));
+       assertTrue(urlValidator.isValid("https://www.hulu.com////welcome?v=a"));
+       assertTrue(urlValidator.isValid("https://www.hulu.com/////welcome?v=a"));
        
        //Should result in invalidity due to spaces and more than 2 slashes being used.
-       assertFalse(urlValidator.isValid("https://www.hulu.com///welcome?v=a"));
-       assertFalse(urlValidator.isValid("https://www.hulu.com////welcome?v=a"));
-       assertFalse(urlValidator.isValid("https://www.hulu.com/////welcome?v=a"));
        assertFalse(urlValidator.isValid("https://www.hulu.com/ welcome?v=a"));
        assertFalse(urlValidator.isValid("https://www.hulu.com&welcome?v=a"));
        assertFalse(urlValidator.isValid("https://www.hulu.com3welcome?v=a"));
@@ -82,7 +82,7 @@ protected void setUp() {
    }
 
    public void testValidatorScheme() {
-       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+       UrlValidator urlValidator = UrlValidator.getInstance();
 
        //Should reuslt in validity
        assertTrue(urlValidator.isValid("https://www.netflix.com"));
@@ -105,9 +105,9 @@ protected void setUp() {
        assertTrue(urlValidator.isValid("https://search.oregonstate.edu/?q=cs&close=default_frontend"));
        assertTrue(urlValidator.isValid("https://search.oregonstate.edu/computerscience/?q=cs"));
        assertTrue(urlValidator.isValid("https://search.oregonstate.edu/"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu./?q=cs"));
 
        //invalid query strings
-       assertFalse(urlValidator.isValid("https://search.oregonstate.edu./?q=cs"));
        assertFalse(urlValidator.isValid("https://search.oregonstate.edu//?q=cs"));
    }
    
