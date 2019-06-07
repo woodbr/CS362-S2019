@@ -49,6 +49,93 @@ protected void setUp() {
         testIsValid(testUrlPartsOptions, options);
    }
 
+   //Tom unittests are added here:
+   public void testValidatorAuthority() {
+       UrlValidator urlValidator = new UrlValidator();
+
+       //Should result in validity
+       assertTrue(urlValidator.isValid("https://www.netflix.com"));
+       assertTrue(urlValidator.isValid("https://www.netflix.com/"));
+
+       //Should result in invalidity
+       assertFalse(urlValidator.isValid("https://ww.netflix.com"));
+       assertFalse(urlValidator.isValid("https://w.netflix.com"));
+       assertFalse(urlValidator.isValid("https://www.netflix"));
+       assertFalse(urlValidator.isValid("https://netflix"));
+   }
+
+   public void testValidatorPath() {
+       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
+
+       //Should result in validity due to UrlValidator allowing up to 2 slashes to be used
+       assertTrue(urlValidator.isValid("https://www.hulu.com/welcome?v=a"));
+       assertTrue(urlValidator.isValid("https://www.hulu.com//welcome?v=a"));
+       
+       //Should result in invalidity due to spaces and more than 2 slashes being used.
+       assertFalse(urlValidator.isValid("https://www.hulu.com///welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com////welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com/////welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com/ welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com&welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com3welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.comswelcome?v=a"));
+   }
+
+   public void testValidatorScheme() {
+       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+
+       //Should reuslt in validity
+       assertTrue(urlValidator.isValid("https://www.netflix.com"));
+       assertTrue(urlValidator.isValid("http://www.netflix.com"));
+       
+       //Should result in invalidity
+       assertFalse(urlValidator.isValid("htp://www.netflix.com"));
+       assertFalse(urlValidator.isValid("ht://www.netflix.com"));
+       assertFalse(urlValidator.isValid("lk://www.netflix.com"));
+       assertFalse(urlValidator.isValid("h://www.netflix.com"));
+       assertFalse(urlValidator.isValid("http//www.netflix.com"));
+   }
+   
+   
+   //JEFF unittests added here:
+   public void testValidatorQueries() {
+       String[] schemes = {"http","https"};
+       UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+       //valid query strings
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/?q=cs&close=default_frontend"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/computerscience/?q=cs"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/"));
+
+       //invalid query strings
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu./?q=cs"));
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu//?q=cs"));
+   }
+   
+   public void testValidatorTestFragments1() {
+       String[] schemes = {"http","https"};
+     //NO_FRAGMENT flag, valid fragments not allowed
+       UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+       
+       //no fragment included
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome"));
+       
+       //fragment not allowed
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu/welcome#message"));
+     
+   }
+   public void testValidatorTestFragments2() {
+       String[] schemes = {"http","https"};
+     //not including NO_FRAGMENT flag, valid fragments are allowed
+       UrlValidator urlValidator = new UrlValidator(schemes);
+       
+       //no fragment included
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome"));
+       
+       //valid fragment allowed
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome#message"));
+     
+   }
+
    public void testIPv6Address() {
 	   assertFalse(InetAddressValidator.getInstance()
 			   .isValidInet6Address("+7:0123:4567:89::abcd:EF"));
