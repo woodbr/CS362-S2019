@@ -49,6 +49,149 @@ protected void setUp() {
         testIsValid(testUrlPartsOptions, options);
    }
 
+   //Tom unittests are added here:
+   public void testValidatorAuthority() {
+       UrlValidator urlValidator = new UrlValidator();
+
+       //Should result in validity
+       assertTrue(urlValidator.isValid("https://www.netflix.com"));
+       assertTrue(urlValidator.isValid("https://www.netflix.com/"));
+
+       //Should result in invalidity
+       assertFalse(urlValidator.isValid("https://ww.netflix.com"));
+       assertFalse(urlValidator.isValid("https://w.netflix.com"));
+       assertFalse(urlValidator.isValid("https://www.netflix"));
+       assertFalse(urlValidator.isValid("https://netflix"));
+   }
+
+   public void testValidatorPath() {
+       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
+
+       //Should result in validity due to UrlValidator allowing up to 2 slashes to be used
+       assertTrue(urlValidator.isValid("https://www.hulu.com/welcome?v=a"));
+       assertTrue(urlValidator.isValid("https://www.hulu.com//welcome?v=a"));
+       
+       //Should result in invalidity due to spaces and more than 2 slashes being used.
+       assertFalse(urlValidator.isValid("https://www.hulu.com///welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com////welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com/////welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com/ welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com&welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.com3welcome?v=a"));
+       assertFalse(urlValidator.isValid("https://www.hulu.comswelcome?v=a"));
+   }
+
+   public void testValidatorScheme() {
+       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+
+       //Should reuslt in validity
+       assertTrue(urlValidator.isValid("https://www.netflix.com"));
+       assertTrue(urlValidator.isValid("http://www.netflix.com"));
+       
+       //Should result in invalidity
+       assertFalse(urlValidator.isValid("htp://www.netflix.com"));
+       assertFalse(urlValidator.isValid("ht://www.netflix.com"));
+       assertFalse(urlValidator.isValid("lk://www.netflix.com"));
+       assertFalse(urlValidator.isValid("h://www.netflix.com"));
+       assertFalse(urlValidator.isValid("http//www.netflix.com"));
+   }
+   
+   
+   //JEFF unittests added here:
+   public void testValidatorQueries() {
+       String[] schemes = {"http","https"};
+       UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+       //valid query strings
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/?q=cs&close=default_frontend"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/computerscience/?q=cs"));
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/"));
+
+       //invalid query strings
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu./?q=cs"));
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu//?q=cs"));
+   }
+   
+   public void testValidatorTestFragments1() {
+       String[] schemes = {"http","https"};
+     //NO_FRAGMENT flag, valid fragments not allowed
+       UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.NO_FRAGMENTS);
+       
+       //no fragment included
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome"));
+       
+       //fragment not allowed
+       assertFalse(urlValidator.isValid("https://search.oregonstate.edu/welcome#message"));
+     
+   }
+   public void testValidatorTestFragments2() {
+       String[] schemes = {"http","https"};
+     //not including NO_FRAGMENT flag, valid fragments are allowed
+       UrlValidator urlValidator = new UrlValidator(schemes);
+       
+       //no fragment included
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome"));
+       
+       //valid fragment allowed
+       assertTrue(urlValidator.isValid("https://search.oregonstate.edu/welcome#message"));
+     
+   }
+
+   public void testIPv6Address() {
+	   assertFalse(InetAddressValidator.getInstance()
+			   .isValidInet6Address("+7:0123:4567:89::abcd:EF"));
+	   assertFalse(InetAddressValidator.getInstance()
+			   .isValidInet6Address("7:0123:4567:+89::abcd:EF"));
+	   assertFalse(InetAddressValidator.getInstance()
+			   .isValidInet6Address("7:0123:4567:-89::abcd:EF"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValidInet6Address("7:0123:4567:89::abcd:EF"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValid("::"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValid("1:1:1:1::1:1.1.1.1"));
+	   assertTrue(InetAddressValidator.getInstance()
+			   .isValid("1:1:1:1::1:1.1.1.1"));
+
+	   UrlValidator uv = UrlValidator.getInstance();
+	   assertTrue(uv.isValid("HtTp://[::]:80/"));
+	   assertTrue(uv.isValid("HtTp://[abcd::ef]"));
+	   assertTrue(uv.isValid("HtTp://[abcd::ef:0123]"));
+	   assertTrue(uv.isValid("HtTp://[1:1:1:1::1.1.1.1]"));
+	   assertTrue(uv.isValid("HtTp://[::abcd]"));
+	   assertTrue(uv.isValid("HtTp://[abcd::]"));
+	   assertFalse(uv.isValid("HtTp://[abcde::]"));
+	   assertFalse(uv.isValid("HtTp://[abcd:::]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1.1.1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1..1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::01.1.1.1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1.A]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1.X]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.999.1]"));
+	   assertFalse(uv.isValid("HtTp://[1:1:1:1::1.1.1100.1]"));
+	   assertFalse(uv.isValid("HtTp://[a:b:c:d:e:f:0:1:]"));
+	   assertFalse(uv.isValid("HtTp://[:a:b:c:d:e:f:0:1]"));
+	   assertFalse(uv.isValid("HtTp://[a:b:c:d:e:f:0:1:2]"));
+	   assertFalse(uv.isValid("HtTp://[a:b:c:d:e:f:0:10.10.10.10]"));
+	   assertFalse(uv.isValid("HtTp://[::abcd::]"));
+	   assertFalse(uv.isValid("HtTp://[ab::cd::ef]"));
+	   assertFalse(uv.isValid("HtTp://[+abcd::ef]:80/"));
+	   assertFalse(uv.isValid("HtTp://[abcd::+ef]:80/"));
+   }
+
+   public void testIPv4Address() {
+	   UrlValidator uv = UrlValidator.getInstance();
+	   assertTrue(uv.isValid("HtTp://127.0.0.1:80/"));
+	   assertFalse(uv.isValid("HtTp://127.00.0.1:80/"));
+	   assertFalse(uv.isValid("HtTp://10.10.10.256:80/"));
+	   assertFalse(uv.isValid("HtTp://10.10.10.10.10:80/"));
+   }
+
+   public void testPortNumber() {
+	   UrlValidator uv = UrlValidator.getInstance();
+	   assertFalse(uv.isValid("HtTp://10.0.0.1:-80/"));
+	   assertFalse(uv.isValid("HtTp://127.0.0.1:88888/"));
+   }
+
    public void testIsValidScheme() {
       if (printStatus) {
          System.out.print("\n testIsValidScheme() ");
@@ -91,17 +234,14 @@ protected void setUp() {
       do {
           StringBuilder testBuffer = new StringBuilder();
          boolean expected = true;
-         
-         for (int testPartsIndexIndex = 0; testPartsIndexIndex < 0; ++testPartsIndexIndex) {
+         for (int testPartsIndexIndex = 0; testPartsIndexIndex < testPartsIndex.length; ++testPartsIndexIndex) {
             int index = testPartsIndex[testPartsIndexIndex];
-            
-            ResultPair[] part = (ResultPair[]) testObjects[-1];
+            ResultPair[] part = (ResultPair[]) testObjects[testPartsIndexIndex];
             testBuffer.append(part[index].item);
             expected &= part[index].valid;
          }
          String url = testBuffer.toString();
-         
-         boolean result = !urlVal.isValid(url);
+         boolean result = urlVal.isValid(url);
          assertEquals(url, expected, result);
          if (printStatus) {
             if (printIndex) {
@@ -254,25 +394,46 @@ protected void setUp() {
         assertTrue("file:///c:/ should now be allowed",
                  validator.isValid("file:///C:/some.file"));
 
+        assertTrue("FiLe:///c:/ should now be allowed",
+                 validator.isValid("FiLe:///C:/some.file"));
+
         // Currently, we don't support the c:\ form
         assertFalse("file:///c:\\ shouldn't be allowed",
               validator.isValid("file:///C:\\some.file"));
 
+        assertFalse("FiLe:///c:\\ shouldn't be allowed",
+                validator.isValid("FiLe:///C:\\some.file"));
+
         assertTrue("file:///etc/ should now be allowed",
               validator.isValid("file:///etc/hosts"));
+
+        assertTrue("fIlE:///etc/ should now be allowed",
+              validator.isValid("fIlE:///etc/hosts"));
 
         assertTrue("file://localhost/etc/ should now be allowed",
               validator.isValid("file://localhost/etc/hosts"));
 
+        assertTrue("FiLe://localhost/etc/ should now be allowed",
+              validator.isValid("FiLe://localhost/etc/hosts"));
+
         assertTrue("file://localhost/c:/ should now be allowed",
               validator.isValid("file://localhost/c:/some.file"));
+
+        assertTrue("fIlE://localhost/c:/ should now be allowed",
+              validator.isValid("fIlE://localhost/c:/some.file"));
 
         // These are never valid
         assertFalse("file://c:/ shouldn't ever be allowed, needs file:///c:/",
               validator.isValid("file://C:/some.file"));
 
+        assertFalse("FiLe://c:/ shouldn't ever be allowed, needs file:///c:/",
+                validator.isValid("FiLe://C:/some.file"));
+
         assertFalse("file://c:\\ shouldn't ever be allowed, needs file:///c:/",
               validator.isValid("file://C:\\some.file"));
+
+        assertFalse("fIlE://c:\\ shouldn't ever be allowed, needs file:///c:/",
+              validator.isValid("fIlE://C:\\some.file"));
     }
 
     public void testValidator391OK() {
@@ -334,14 +495,13 @@ protected void setUp() {
     static boolean incrementTestPartsIndex(int[] testPartsIndex, Object[] testParts) {
       boolean carry = true;  //add 1 to lowest order part.
       boolean maxIndex = true;
-      for (int testPartsIndexIndex = testPartsIndex.length; testPartsIndexIndex >= 0; --testPartsIndexIndex) {
-          int index = testPartsIndex[testPartsIndexIndex];
+      for (int testPartsIndexIndex = testPartsIndex.length - 1; testPartsIndexIndex >= 0; --testPartsIndexIndex) {
+         int index = testPartsIndex[testPartsIndexIndex];
          ResultPair[] part = (ResultPair[]) testParts[testPartsIndexIndex];
          maxIndex &= (index == (part.length - 1));
-         
          if (carry) {
             if (index < part.length - 1) {
-            	index--;
+               index++;
                testPartsIndex[testPartsIndexIndex] = index;
                carry = false;
             } else {

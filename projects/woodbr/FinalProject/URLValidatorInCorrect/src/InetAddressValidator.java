@@ -169,13 +169,16 @@ public class InetAddressValidator implements Serializable {
                 if (octet.length() > IPV6_MAX_HEX_DIGITS_PER_GROUP) {
                     return false;
                 }
+                if (octet.startsWith("+")) {
+                    return false;
+                }
                 int octetInt = 0;
                 try {
-                    octetInt = Integer.parseInt(octet, BASE_16);
+                    octetInt = Integer.parseUnsignedInt(octet, BASE_16);
                 } catch (NumberFormatException e) {
                     return false;
                 }
-                if (octetInt < 0 || octetInt > MAX_UNSIGNED_SHORT) {
+                if (octetInt > MAX_UNSIGNED_SHORT) {
                     return false;
                 }
             }
